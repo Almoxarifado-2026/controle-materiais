@@ -41,7 +41,7 @@ const MENSAGENS_AUTH = {
 
 function mensagemAuth(err) {
   const codigo = err && err.code;
-  if (!MENSAGENS_AUTH[codigo]) console.warn('Falha no login (código do Firebase):', codigo); // ajuda a diagnosticar
+  if (!MENSAGENS_AUTH[codigo]) console.warn('Falha no login (código do Firebase):', codigo, '| detalhe:', err && err.message, '| servidor:', err && err.customData && JSON.stringify(err.customData._serverResponse)); // ajuda a diagnosticar
   return MENSAGENS_AUTH[codigo] || `Não foi possível entrar. Tente novamente.${codigo ? ` (${codigo})` : ''}`;
 }
 
