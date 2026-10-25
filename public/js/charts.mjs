@@ -191,8 +191,10 @@ const fmtEixo = (n) => `${formatarInteiro(n)} kg`;
  */
 export function htmlAreaEvolucao(pontos, granularidade, { acumulado = false, idGradiente = 'grad-evolucao' } = {}) {
   if (!evolucaoValida(pontos)) return '';
-  const L = 700; const A = 240;
-  const esq = 54; const dir = 14; const topo = 14; const base = 34;
+  // Área de desenho mais "quadrada" (520×250) para não ficar achatada no celular; margens folgadas
+  // para os rótulos dos eixos nunca encostarem na linha, nos pontos nem na borda do cartão.
+  const L = 520; const A = 250;
+  const esq = 52; const dir = 26; const topo = 18; const base = 44;
   const larg = L - esq - dir; const alt = A - topo - base;
 
   let soma = 0;
@@ -218,15 +220,17 @@ export function htmlAreaEvolucao(pontos, granularidade, { acumulado = false, idG
     ? ''
     : `<path class="evo-area" d="${traco} L ${coords[n - 1][0].toFixed(2)} ${yBase} L ${coords[0][0].toFixed(2)} ${yBase} Z" fill="url(#${esc(idGradiente)})"/>`;
 
-  const salto = Math.max(1, Math.ceil(n / 16));
+  // No máximo ~7 rótulos no eixo X, bem espaçados (sem alternar linhas nem sobrepor).
+  const salto = Math.max(1, Math.ceil(n / 7));
   const rotulosX = pontos
     .map((p, i) => (i % salto === 0
-      ? `<text class="evo-eixo-x${(i / salto) % 2 === 1 ? ' evo-eixo-x-alt' : ''}" x="${x(i).toFixed(2)}" y="${A - 12}" text-anchor="middle">${esc(rotuloBalde(p.chave, granularidade))}</text>`
+      ? `<text class="evo-eixo-x" x="${x(i).toFixed(2)}" y="${A - 10}" text-anchor="middle">${esc(rotuloBalde(p.chave, granularidade))}</text>`
       : ''))
     .join('');
 
+  const raio = n > 20 ? 2.6 : 3.6; // muitos pontos (visão Mês): marcadores menores
   const marcadores = n <= 62
-    ? coords.map(([cx, cy], i) => `<circle class="evo-ponto" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="3.6"><title>${esc(`${rotuloBalde(pontos[i].chave, granularidade)}: ${formatarKg(valores[i])}`)}</title></circle>`).join('')
+    ? coords.map(([cx, cy], i) => `<circle class="evo-ponto" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${raio}"><title>${esc(`${rotuloBalde(pontos[i].chave, granularidade)}: ${formatarKg(valores[i])}`)}</title></circle>`).join('')
     : '';
 
   const descricao = acumulado ? 'peso acumulado no período' : 'peso por período';
