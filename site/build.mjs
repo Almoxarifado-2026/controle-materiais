@@ -38,6 +38,29 @@ await build({
   logLevel: 'info',
 });
 
+// Carimba o service worker com um ID único deste deploy (hash de todos os arquivos do site).
+// O sw.js muda a cada publicação -> o navegador baixa a versão nova e o app se atualiza sozinho.
+{
+  const { createHash } = await import('node:crypto');
+  const { readdir, readFile } = await import('node:fs/promises');
+  const hash = createHash('sha256');
+  async function varrer(dir) {
+    const itens = (await readdir(dir, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name));
+    for (const it of itens) {
+      const p = path.join(dir, it.name);
+      if (it.isDirectory()) await varrer(p);
+      else if (path.relative(dist, p) !== 'sw.js') hash.update(path.relative(dist, p)).update(await readFile(p));
+    }
+  }
+  await varrer(dist);
+  const build = hash.digest('hex').slice(0, 12);
+  const swPath = path.join(dist, 'sw.js');
+  const sw = await readFile(swPath, 'utf8');
+  if (!sw.includes('__BUILD__')) throw new Error('sw.js sem o marcador __BUILD__');
+  await writeFile(swPath, sw.replace('__BUILD__', build));
+  console.log('sw.js carimbado com build', build);
+}
+
 // GitHub Pages: sem Jekyll (nada de arquivos ignorados por convenção).
 await writeFile(path.join(dist, '.nojekyll'), '');
 console.log('dist/ pronto.');
