@@ -391,6 +391,7 @@ section[data-tela="relatorios"] [data-regiao="periodo"] { display: none; }
   text-overflow: ellipsis;
 }
 .filtros-com-visao input[type="date"] { padding-right: 6px; }
+.filtros-com-visao.datas-ocultas .campo-data { display: none; }
 .filtros-com-visao .filtros-acoes { flex: 0 0 150px; margin-left: auto; flex-direction: column; flex-wrap: nowrap; gap: 6px; }
 .filtros-com-visao .filtros-acoes .btn { min-height: 40px; padding: 6px 10px; font-size: clamp(0.76rem, 0.68rem + 0.2vw, 0.84rem); border-radius: 6px; white-space: nowrap; }
 .filtros-com-visao .filtros-acoes .btn:not(.btn-primario) { font-weight: 500; }
