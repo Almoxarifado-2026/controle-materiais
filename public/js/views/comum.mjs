@@ -93,6 +93,7 @@ function htmlCampoVisao(visaoAtual) {
 }
 
 const ICONE_FILTRO = '<svg class="btn-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></svg>';
+const ICONE_FECHAR = '<svg class="btn-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const ICONE_LIMPAR = '<svg class="btn-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg>';
 
 export function htmlBarraFiltros(filtros, materiais, { comVisao = false, visaoAtual = 'mes' } = {}) {
@@ -102,7 +103,19 @@ export function htmlBarraFiltros(filtros, materiais, { comVisao = false, visaoAt
   const opCategorias = categoriasDistintas(materiais)
     .map((c) => `<option value="${esc(c)}"${c === filtros.categoria ? ' selected' : ''}>${esc(c)}</option>`)
     .join('');
-  return `<form class="filtros${comVisao ? ' filtros-com-visao' : ''}" id="form-filtros" novalidate>
+  // Celular/tablet: só o botão "Abrir filtros" aparece; o formulário abre num modal (CSS + menu abaixo).
+  // No computador o botão e o cabeçalho do modal ficam escondidos e o formulário aparece como sempre.
+  return `<div class="filtros-gatilho">
+    <button type="button" class="btn btn-primario" data-acao="abrir-filtros" aria-expanded="false" aria-controls="filtros-modal">${ICONE_FILTRO}Abrir filtros</button>
+  </div>
+  <div class="filtros-modal" id="filtros-modal">
+  <div class="filtros-modal-fundo" data-acao="fechar-filtros"></div>
+  <div class="filtros-modal-caixa" aria-label="Filtros">
+  <div class="filtros-modal-topo">
+    <h2>Filtros</h2>
+    <button type="button" class="filtros-modal-fechar" data-acao="fechar-filtros" aria-label="Fechar filtros">${ICONE_FECHAR}</button>
+  </div>
+  <form class="filtros${comVisao ? ' filtros-com-visao' : ''}" id="form-filtros" novalidate>
     ${comVisao ? htmlCampoVisao(visaoAtual) : ''}
     <div class="campo">
       <label for="f-material">Material</label>
@@ -124,7 +137,9 @@ export function htmlBarraFiltros(filtros, materiais, { comVisao = false, visaoAt
       <button type="submit" class="btn btn-primario">${ICONE_FILTRO}Aplicar filtros</button>
       <button type="button" class="btn" data-acao="limpar-filtros">${ICONE_LIMPAR}Limpar filtros</button>
     </div>
-  </form>`;
+  </form>
+  </div>
+  </div>`;
 }
 
 // Visão temporal (Sprint 10): rótulos de apresentação. NÃO recalcula nada — só nomeia,
@@ -213,6 +228,37 @@ export function montarTelaComFiltros({ raiz, api, ativa, titulo, subtitulo, busc
   let sequencia = 0; // descarta respostas antigas quando o usuário refiltra rápido
   let visao = visaoInicial;
 
+  // Modal de filtros (celular/tablet, até 900px — igual ao menu ☰). No computador não há modal.
+  const celular = window.matchMedia('(max-width: 900px)');
+  function modalFiltros() { return regFiltros.querySelector('.filtros-modal'); }
+  function abrirModal() {
+    const m = modalFiltros();
+    if (!m) return;
+    m.classList.add('aberto');
+    m.querySelector('.filtros-modal-caixa').setAttribute('role', 'dialog');
+    m.querySelector('.filtros-modal-caixa').setAttribute('aria-modal', 'true');
+    regFiltros.querySelector('[data-acao="abrir-filtros"]').setAttribute('aria-expanded', 'true');
+    document.body.classList.add('modal-aberto');
+    const primeiro = m.querySelector('input, select');
+    if (primeiro) primeiro.focus({ preventScroll: true });
+  }
+  function fecharModal({ foco = false } = {}) {
+    document.body.classList.remove('modal-aberto');
+    const m = modalFiltros();
+    if (!m || !m.classList.contains('aberto')) return;
+    m.classList.remove('aberto');
+    const caixa = m.querySelector('.filtros-modal-caixa');
+    caixa.removeAttribute('role');
+    caixa.removeAttribute('aria-modal');
+    const gatilho = regFiltros.querySelector('[data-acao="abrir-filtros"]');
+    gatilho.setAttribute('aria-expanded', 'false');
+    if (foco) gatilho.focus();
+  }
+  celular.addEventListener('change', (ev) => { if (!ev.matches) fecharModal(); });
+  raiz.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') fecharModal({ foco: true });
+  });
+
   async function carregarResultado() {
     const minha = ++sequencia;
     const filtros = obterFiltros();
@@ -232,6 +278,7 @@ export function montarTelaComFiltros({ raiz, api, ativa, titulo, subtitulo, busc
 
   async function iniciar() {
     const minha = ++sequencia;
+    document.body.classList.remove('modal-aberto');
     regFiltros.innerHTML = '';
     regPeriodo.innerHTML = '';
     regResultado.innerHTML = htmlCarregando();
@@ -259,17 +306,25 @@ export function montarTelaComFiltros({ raiz, api, ativa, titulo, subtitulo, busc
       dataFinal: String(dados.get('dataFinal') ?? ''),
     });
     if (comVisao) visao = String(dados.get('visao') ?? visao);
+    fecharModal();
     carregarResultado();
   });
   // Trocar o Período (Dia/Semana/Mês/Ano/Personalizado) já aplica, como um botão segmentado deve fazer.
   raiz.addEventListener('change', (ev) => {
     const alvo = ev.target;
+    // No modal (celular) o usuário escolhe tudo e só então toca em "Aplicar filtros".
+    if (celular.matches) return;
     if (alvo && alvo.name === 'visao' && alvo.form && alvo.form.id === 'form-filtros') alvo.form.requestSubmit();
   });
   raiz.addEventListener('click', (ev) => {
     const alvo = ev.target.closest('[data-acao]');
     if (!alvo) return;
-    if (alvo.dataset.acao === 'limpar-filtros') {
+    if (alvo.dataset.acao === 'abrir-filtros') {
+      abrirModal();
+    } else if (alvo.dataset.acao === 'fechar-filtros') {
+      fecharModal({ foco: true });
+    } else if (alvo.dataset.acao === 'limpar-filtros') {
+      fecharModal();
       limparFiltros();
       visao = visaoInicial;
       regFiltros.innerHTML = htmlBarraFiltros(obterFiltros(), materiais, { comVisao, visaoAtual: visao });
