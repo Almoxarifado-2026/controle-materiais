@@ -127,7 +127,10 @@ const painelVazio = (txt) => `<p class="painel-vazio">${esc(txt)}</p>`;
 function painelEvolucao(ev, modo) {
   let corpo;
   let controle = '';
-  if (ev.tipo === 'ok' && evolucaoValida(ev.dados && ev.dados.pontos)) {
+  if (ev.tipo === 'ok' && evolucaoValida(ev.dados && ev.dados.pontos) && ev.dados.pontos.every((p) => p.pesoKg === 0)) {
+    // Período sem nenhuma pesagem: em vez de um gráfico vazio (linha reta em 0 kg), mostra um aviso.
+    corpo = painelVazio('Nenhuma pesagem registrada neste período.');
+  } else if (ev.tipo === 'ok' && evolucaoValida(ev.dados && ev.dados.pontos)) {
     const g = ev.dados.granularidade;
     const atual = modo === 'acumulado' ? 'acumulado' : 'periodo';
     controle = seletor('evolucao', 'Visualização', [['periodo', ROTULO_GRANULARIDADE[g] || 'Por período'], ['acumulado', 'Acumulado']], atual);
