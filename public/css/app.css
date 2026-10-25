@@ -586,3 +586,14 @@ section.painel-dash[data-painel="ultimos"] { margin-bottom: 8px; }
   .filtros-modal .filtros-com-visao .filtros-acoes { flex-direction: column; }
   body.modal-aberto { overflow: hidden; }
 }
+
+/* ---------- Login: botão "olho" para mostrar/ocultar a senha ---------- */
+.campo-senha { position: relative; }
+.campo-senha input { padding-right: 50px; }
+.senha-ver {
+  position: absolute; right: 3px; top: 50%; transform: translateY(-50%);
+  display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+  padding: 0; border: none; border-radius: 6px; background: transparent; color: var(--cor-texto-suave); cursor: pointer;
+}
+.senha-ver:hover { background: var(--cor-fundo); color: var(--cor-texto); }
+.senha-icone { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
