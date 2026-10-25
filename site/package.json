@@ -1,0 +1,20 @@
+{
+  "name": "controle-materiais-site",
+  "version": "1.11.0",
+  "private": true,
+  "description": "Build do site estático (GitHub Pages): empacota o domínio + repositories Firestore para rodar no navegador. Não altera a aplicação Express/SQLite da raiz.",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node tests/test-fetch-local.js",
+    "emulador": "firebase emulators:exec --config firebase.emulator.json --only firestore --project demo-controle-materiais \"node tests/test-regras-firestore.js\""
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "esbuild": "^0.28.2",
+    "firebase": "^12.19.0",
+    "firebase-tools": "^15.32.1"
+  }
+}

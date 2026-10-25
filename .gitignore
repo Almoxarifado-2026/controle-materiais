@@ -1,0 +1,51 @@
+node_modules/
+dist/
+desktop/release/
+data/
+backups/
+tests/.test-tmp/
+tests/resultado-testes.json
+tests/.test-tmp-materiais/
+tests/resultado-testes-materiais.json
+tests/.test-tmp-registros/
+tests/resultado-testes-registros-peso.json
+tests/.test-tmp-historico/
+tests/resultado-testes-historico-filtros.json
+tests/.test-tmp-dashboard/
+tests/resultado-testes-dashboard.json
+tests/.test-tmp-graficos/
+tests/resultado-testes-graficos.json
+tests/.test-tmp-interface/
+tests/.test-tmp-e2e/
+tests/resultado-testes-interface.json
+tests/resultado-e2e-navegador.json
+tests/.test-tmp-backup/
+tests/resultado-testes-backup.json
+tests/.test-tmp-sprint9/
+tests/resultado-testes-sprint9.json
+tests/.test-tmp-sprint9-correcao-health/
+tests/resultado-testes-sprint9-correcao-health.json
+tests/.test-tmp-sprint10-evolucao/
+tests/resultado-testes-sprint10-evolucao-temporal.json
+tests/.test-tmp-integracao/
+tests/resultado-testes-integracao-repositories.json
+
+# Ambiente / segredos
+.env
+.env.*
+!.env.example
+
+# Bancos locais
+*.db
+*.sqlite
+*.sqlite3
+
+# Firebase local / logs
+.firebase/
+firebase-debug.log
+*-debug.log
+
+# Credenciais / service accounts
+service-account*.json
+*serviceAccount*.json
+firebase-adminsdk-*.json

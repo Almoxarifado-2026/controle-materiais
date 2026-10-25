@@ -1,0 +1,55 @@
+rules_version = '2';
+
+// ============================================================
+// Controle de Materiais — regras de produção (site público no GitHub Pages).
+//
+//   LEITURA  : livre para quem tem o link (consulta: dashboard, histórico, gráficos...).
+//   ESCRITA  : somente usuários autenticados cujo e-mail esteja na lista EDITORES abaixo.
+//              Ter conta no Firebase Auth NÃO basta: qualquer pessoa conseguiria se cadastrar
+//              pela API pública, então a lista de e-mails é a trava real.
+//   EXCLUSÃO : proibida (material só é ativado/desativado; registro é histórico permanente),
+//              exceto o documento auxiliar de unicidade de nome, que é trocado ao renomear.
+//
+// >>> ANTES DO DEPLOY: troque o e-mail de exemplo abaixo pelo(s) e-mail(s) de quem pode editar.
+//     Sem isso ninguém consegue gravar (falha segura). Deploy:
+//       firebase deploy --only firestore:rules,firestore:indexes
+// ============================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function editor() {
+      return request.auth != null
+        && request.auth.token.email in ['manutencaoalmoxarifado85@gmail.com'];
+    }
+
+    match /materiais/{id} {
+      allow read: if true;
+      allow create: if editor()
+        && request.resource.data.nome is string
+        && request.resource.data.ativo is bool;
+      allow update: if editor()
+        && request.resource.data.nome is string
+        && request.resource.data.ativo is bool;
+      allow delete: if false;
+    }
+
+    match /registrosPeso/{id} {
+      allow read: if true;
+      allow create: if editor()
+        && request.resource.data.materialId is string
+        && request.resource.data.pesoKg is number
+        && request.resource.data.pesoKg > 0
+        && request.resource.data.dataRecebimento is string;
+      allow update, delete: if false;
+    }
+
+    // Índice interno de nomes únicos: só o editor lê/grava (usado dentro das transações).
+    match /materiaisNomesIndex/{id} {
+      allow read, write: if editor();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

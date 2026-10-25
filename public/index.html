@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Controle de Materiais — Reciclagem e Separação</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <svg class="brand-logo" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/>
+          <path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"/>
+          <path d="m14 16-3 3 3 3"/>
+          <path d="M8.293 13.596 7.196 9.5 3.1 10.598"/>
+          <path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"/>
+          <path d="m13.378 9.633 4.096 1.098 1.097-4.096"/>
+        </svg>
+        <span class="brand-textos">
+          <span class="brand-nome">Controle de Materiais</span>
+          <span class="brand-sub">Reciclagem e Separação</span>
+        </span>
+      </div>
+
+      <nav class="nav" aria-label="Principal">
+        <a class="nav-item" href="#/dashboard" data-rota="dashboard">
+          <svg class="nav-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 10h16M10 10v10"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="#/lancar" data-rota="lancar">
+          <svg class="nav-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Lançar Pesagem</span>
+        </a>
+        <a class="nav-item" href="#/materiais" data-rota="materiais">
+          <svg class="nav-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5zM3 8l9 5 9-5M12 13v8"/></svg>
+          <span>Materiais</span>
+        </a>
+        <a class="nav-item" href="#/historico" data-rota="historico">
+          <svg class="nav-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          <span>Histórico</span>
+        </a>
+        <a class="nav-item" href="#/graficos" data-rota="graficos">
+          <svg class="nav-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9h-9zM14.5 2.8A9 9 0 0 1 21.2 9.5H14.5z"/></svg>
+          <span>Gráficos</span>
+        </a>
+        <a class="nav-item" href="#/relatorios" data-rota="relatorios">
+          <svg class="nav-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM15 3v4h4M9 12h7M9 16h7M9 8h3"/></svg>
+          <span>Relatórios</span>
+        </a>
+        <a class="nav-item" href="#/configuracoes" data-rota="configuracoes">
+          <svg class="nav-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6"/></svg>
+          <span>Configurações</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-rodape">
+        <p class="sidebar-lema">
+          <svg class="sidebar-folha" viewBox="0 0 24 24" aria-hidden="true">
+            <path class="folha-corpo" d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path class="folha-nervura" d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+          <span class="brand-tagline">Juntos por um planeta mais limpo!</span>
+        </p>
+        <span class="sidebar-versao">v1.10.0</span>
+      </div>
+    </aside>
+
+    <main id="conteudo" class="conteudo" tabindex="-1">
+      <noscript><p class="aviso aviso-erro">Esta aplicação precisa de JavaScript habilitado no navegador.</p></noscript>
+    </main>
+  </div>
+
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+
+  <!-- Versão online (GitHub Pages + Firebase): config pública, bundle do domínio/Firestore e login.
+       Se js/nuvem.js não existir (modo Express local), os dois scripts abaixo são ignorados. -->
+  <script src="firebase-config.js"></script>
+  <script type="module" src="js/nuvem.js"></script>
+  <script type="module" src="js/login.mjs"></script>
+  <script type="module" src="js/app.mjs"></script>
+</body>
+</html>

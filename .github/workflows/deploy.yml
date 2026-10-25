@@ -1,0 +1,62 @@
+name: Deploy Controle de Materiais
+
+# Roda a cada push na branch principal, ou manualmente pela aba "Actions".
+# Publica no GitHub Pages o site estático gerado por site/build.mjs (pasta dist/):
+# interface (public/) + domínio e repositories Firestore empacotados para o navegador.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Dependências da raiz: os testes do roteador local reaproveitam o domínio e o Firestore FAKE.
+      - name: Instalar dependências (raiz)
+        run: npm ci
+
+      - name: Instalar dependências (site)
+        run: npm ci
+        working-directory: site
+
+      # Não publica se o roteador local (regras de acesso, erros, formato das respostas) quebrar.
+      - name: Testar o roteador local
+        run: npm test
+        working-directory: site
+
+      - name: Gerar o site (dist/)
+        run: npm run build
+        working-directory: site
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empacotar o site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

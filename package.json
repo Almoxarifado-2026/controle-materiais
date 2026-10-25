@@ -1,0 +1,42 @@
+{
+  "name": "controle-materiais",
+  "version": "1.10.0",
+  "description": "Controle de Materiais - Reciclagem e Separação (Sprint 11: Refinamento Final + Preparação para Uso)",
+  "main": "src/server/server.js",
+  "scripts": {
+    "start": "node src/server/server.js",
+    "test": "node tests/test-foundation.js && node tests/test-materiais.js && node tests/test-registros-peso.js && node tests/test-historico-filtros.js && node tests/test-dashboard.js && node tests/test-graficos.js && node tests/test-interface.js && node tests/test-backup-restauracao.js && node tests/test-sprint9-seguranca.js && node tests/test-sprint9-correcao-health.js && node tests/test-sprint10-evolucao-temporal.js && node tests/test-repositories-sqlite.js && node tests/test-repositories-firestore-logica.js && node tests/test-integracao-repositories.js",
+    "test:foundation": "node tests/test-foundation.js",
+    "test:materiais": "node tests/test-materiais.js",
+    "test:registros": "node tests/test-registros-peso.js",
+    "test:historico": "node tests/test-historico-filtros.js",
+    "test:dashboard": "node tests/test-dashboard.js",
+    "test:graficos": "node tests/test-graficos.js",
+    "test:interface": "node tests/test-interface.js",
+    "test:backup": "node tests/test-backup-restauracao.js",
+    "test:sprint9": "node tests/test-sprint9-seguranca.js",
+    "test:sprint9-correcao-health": "node tests/test-sprint9-correcao-health.js",
+    "test:sprint10": "node tests/test-sprint10-evolucao-temporal.js",
+    "test:e2e": "node tests/e2e-navegador.js",
+    "test:repositories": "node tests/test-repositories-sqlite.js && node tests/test-repositories-firestore-logica.js",
+    "test:repositories:sqlite": "node tests/test-repositories-sqlite.js",
+    "test:repositories:firestore-logica": "node tests/test-repositories-firestore-logica.js",
+    "test:repositories:emulator": "node tests/test-repositories-firestore.js",
+    "test:integracao": "node tests/test-integracao-repositories.js"
+  },
+  "keywords": [
+    "reciclagem",
+    "materiais",
+    "kg",
+    "controle"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.2.1"
+  }
+}
