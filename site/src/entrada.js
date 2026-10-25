@@ -11,7 +11,7 @@
 // ============================================================
 import { initializeApp } from 'firebase/app';
 import * as sdk from 'firebase/firestore';
-import { initializeAuth, browserLocalPersistence, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import provedorWeb from './provedorWeb.js';
 import fetchLocalModulo from './fetchLocal.js';
 
@@ -58,7 +58,12 @@ if (configurado) {
   const db = sdk.initializeFirestore(app, { experimentalForceLongPolling: true });
   // Só e-mail/senha: initializeAuth SEM o resolvedor de popup/redirect evita que o Firebase tente
   // carregar apis.google.com (bloqueado pela CSP, que só permite scripts do próprio site).
-  const auth = initializeAuth(app, { persistence: browserLocalPersistence });
+  const auth = initializeAuth(app, {
+    // Ordem de preferência para guardar a sessão: IndexedDB (muito mais espaço), depois localStorage
+    // e por último sessionStorage. Só localStorage falha com "exceeded the quota" quando o endereço
+    // (github.io é compartilhado entre projetos) já está com o armazenamento cheio.
+    persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence],
+  });
   configurarFirestore({ db, sdk });
 
   onAuthStateChanged(auth, (u) => {
