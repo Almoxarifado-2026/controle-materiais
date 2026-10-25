@@ -1,8 +1,12 @@
-// Service worker mínimo: deixa o app instalável no celular e abre a "casca" mesmo sem internet.
-// Estratégia REDE PRIMEIRO: com internet, sempre carrega a versão mais nova do site (nunca fica
-// preso numa versão velha). Sem internet, usa a última cópia guardada. Os dados vêm do Firebase
-// (outro domínio) e NUNCA passam por este cache.
-const CACHE = 'cm-casca-v1';
+// Service worker com ATUALIZAÇÃO AUTOMÁTICA.
+// - A cada deploy, site/build.mjs troca o texto-marcador da constante BUILD (abaixo) por um carimbo único (hash dos arquivos).
+//   Como o sw.js muda, o navegador detecta a versão nova sozinho.
+// - A versão nova assume na hora (skipWaiting + clients.claim) e apaga os caches antigos.
+// - js/pwa.mjs percebe a troca e recarrega a página uma vez, então ninguém precisa fazer nada.
+// Estratégia REDE PRIMEIRO: com internet, sempre carrega a versão mais nova do site. Sem internet,
+// usa a última cópia guardada. Os dados vêm do Firebase (outro domínio) e NUNCA passam por este cache.
+const BUILD = '__BUILD__';
+const CACHE = 'cm-casca-' + BUILD;
 
 self.addEventListener('install', () => self.skipWaiting());
 
@@ -21,7 +25,9 @@ self.addEventListener('fetch', (ev) => {
   if (url.origin !== self.location.origin) return; // Firebase e outros domínios: direto na rede
 
   ev.respondWith(
-    fetch(req)
+    // cache: 'no-cache' = sempre revalida no servidor (o GitHub Pages deixa o navegador reaproveitar
+    // arquivos por ~10 min, o que atrasaria a atualização).
+    fetch(req, { cache: 'no-cache' })
       .then((resp) => {
         if (resp && resp.ok) {
           const copia = resp.clone();
