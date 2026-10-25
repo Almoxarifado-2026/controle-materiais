@@ -31,11 +31,18 @@ const MENSAGENS_AUTH = {
   'auth/invalid-email': 'Informe um e-mail válido.',
   'auth/user-disabled': 'Este usuário está desativado.',
   'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos e tente de novo.',
+  'auth/operation-not-allowed': 'O login por e-mail e senha não está ativado no Firebase (Authentication > Método de login).',
+  'auth/configuration-not-found': 'O Firebase Authentication ainda não foi configurado neste projeto (Console > Authentication > Começar).',
+  'auth/invalid-api-key': 'A chave do Firebase (apiKey) em firebase-config.js está inválida.',
+  'auth/api-key-not-valid.-please-pass-a-valid-api-key.': 'A chave do Firebase (apiKey) em firebase-config.js está inválida.',
+  'auth/unauthorized-domain': 'Este endereço do site não está autorizado no Firebase (Authentication > Configurações > Domínios autorizados).',
   'auth/network-request-failed': 'Sem conexão com o Firebase. Verifique a internet e tente de novo.',
 };
 
 function mensagemAuth(err) {
-  return MENSAGENS_AUTH[err && err.code] || 'Não foi possível entrar. Tente novamente.';
+  const codigo = err && err.code;
+  if (!MENSAGENS_AUTH[codigo]) console.warn('Falha no login (código do Firebase):', codigo); // ajuda a diagnosticar
+  return MENSAGENS_AUTH[codigo] || `Não foi possível entrar. Tente novamente.${codigo ? ` (${codigo})` : ''}`;
 }
 
 const cfg = globalThis.FIREBASE_CONFIG;
