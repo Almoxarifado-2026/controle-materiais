@@ -548,3 +548,38 @@ section.painel-dash[data-painel="ultimos"] { margin-bottom: 8px; }
 .acesso-erro[hidden] { display: none; }
 .acesso-acoes { display: flex; justify-content: flex-end; gap: 10px; }
 .nav-item[hidden] { display: none; }
+
+/* ---------- Filtros em modal (celular/tablet) ----------
+   No computador: o botão e o cabeçalho do modal ficam escondidos e o formulário aparece normal.
+   Até 900px (mesmo ponto do menu ☰): só o botão "Abrir filtros"; o formulário abre num modal. */
+.filtros-gatilho, .filtros-modal-fundo, .filtros-modal-topo { display: none; }
+.filtros-modal, .filtros-modal-caixa { display: contents; }
+
+@media (max-width: 900px) {
+  .filtros-gatilho { display: block; }
+  .filtros-gatilho .btn { width: 100%; }
+  .filtros-modal { display: none; position: fixed; inset: 0; z-index: 60; }
+  .filtros-modal.aberto { display: flex; align-items: center; justify-content: center; }
+  .filtros-modal-fundo { display: block; position: absolute; inset: 0; background: rgba(15, 30, 22, 0.55); }
+  .filtros-modal-caixa {
+    display: flex; flex-direction: column; position: relative;
+    width: calc(100% - 24px); max-width: 520px; max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px);
+    overflow-y: auto; background: var(--cor-superficie); border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+  .filtros-modal-topo { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 0 22px; }
+  .filtros-modal-topo h2 { font-size: 1.2rem; }
+  .filtros-modal-fechar {
+    display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+    border: none; background: transparent; color: var(--cor-texto); border-radius: 8px; cursor: pointer;
+  }
+  .filtros-modal-fechar:hover { background: var(--cor-fundo); }
+  .filtros-modal-fechar .btn-icone { width: 22px; height: 22px; }
+  .filtros-modal .filtros, .filtros-modal .filtros-com-visao {
+    border: none; box-shadow: none; background: none; padding: 12px 22px 22px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .filtros-modal .filtros-com-visao .campo-visao, .filtros-modal .filtros-com-visao .filtros-acoes { grid-column: auto; }
+  .filtros-modal .filtros-com-visao .filtros-acoes { flex-direction: column; }
+  body.modal-aberto { overflow: hidden; }
+}
