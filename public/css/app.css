@@ -315,19 +315,38 @@ section[data-tela="relatorios"] [data-regiao="periodo"] { display: none; }
   @page { size: A4 portrait; margin: 14mm; }
 }
 
+/* ---------- Botão do menu (☰) — só aparece no celular/tablet ---------- */
+.menu-botao {
+  display: none; margin-left: auto; flex: none; align-items: center; justify-content: center;
+  width: 44px; height: 44px; padding: 0; border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px; background: transparent; color: #fff; cursor: pointer;
+}
+.menu-botao:hover { background: rgba(255, 255, 255, 0.1); }
+.menu-botao:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.menu-icone { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.menu-x { display: none; }
+
 /* ---------- Responsividade ---------- */
 @media (max-width: 900px) {
   .app { flex-direction: column; background: none; }
-  .sidebar { width: 100%; height: auto; position: static; padding: 12px; overflow: visible; }
-  .brand { padding: 0 6px 10px; }
-  .sidebar-rodape { display: none; }
-  .nav { flex-direction: row; flex-wrap: wrap; gap: 6px; }
-  .nav-item { flex: 1 1 calc(33.333% - 6px); min-width: 130px; justify-content: center; padding: 8px; font-size: 0.92rem; }
+  /* Celular/tablet: a lateral vira uma barra fixa no topo; o menu abre e fecha no botão ☰. */
+  .sidebar {
+    width: 100%; height: auto; max-height: 100vh; max-height: 100dvh;
+    position: sticky; top: 0; z-index: 40; align-self: stretch;
+    padding: 10px 12px; overflow-y: auto;
+  }
+  .brand { padding: 0; }
+  .menu-botao { display: inline-flex; }
+  .nav, .sidebar-rodape { display: none; }
+  .sidebar.aberto .nav { display: flex; flex-direction: column; gap: 4px; padding-top: 12px; }
+  .sidebar.aberto .sidebar-rodape { display: flex; padding: 16px 4px 6px; }
+  .sidebar.aberto .menu-hamb { display: none; }
+  .sidebar.aberto .menu-x { display: inline; }
+  .nav-item { justify-content: flex-start; padding: 13px 12px; font-size: 1rem; }
   .conteudo { padding: 20px 16px 40px; }
 }
 
 @media (max-width: 640px) {
-  .nav-item { flex-basis: calc(50% - 6px); }
   .filtros-acoes .btn, .formulario-acoes .btn { flex: 1 1 auto; }
   .tabela-empilhavel thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .tabela-empilhavel, .tabela-empilhavel tbody, .tabela-empilhavel tr, .tabela-empilhavel td { display: block; width: 100%; }

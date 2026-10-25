@@ -33,9 +33,15 @@
           <span class="brand-nome">Controle de Materiais</span>
           <span class="brand-sub">Reciclagem e Separação</span>
         </span>
+        <button type="button" class="menu-botao" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-principal">
+          <svg class="menu-icone" viewBox="0 0 24 24" aria-hidden="true">
+            <path class="menu-hamb" d="M4 6h16M4 12h16M4 18h16"/>
+            <path class="menu-x" d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        </button>
       </div>
 
-      <nav class="nav" aria-label="Principal">
+      <nav class="nav" id="menu-principal" aria-label="Principal">
         <a class="nav-item" href="#/dashboard" data-rota="dashboard">
           <svg class="nav-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 10h16M10 10v10"/></svg>
           <span>Dashboard</span>
@@ -91,6 +97,7 @@
   <script type="module" src="js/nuvem.js"></script>
   <script type="module" src="js/login.mjs"></script>
   <script type="module" src="js/app.mjs"></script>
+  <script type="module" src="js/menu.mjs"></script>
   <script type="module" src="js/pwa.mjs"></script>
 </body>
 </html>
