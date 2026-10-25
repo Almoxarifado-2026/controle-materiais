@@ -448,10 +448,10 @@ section.painel-dash[data-painel="ultimos"] { margin-bottom: 8px; }
 .ico-seta { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* ---------- Evolução (área) ---------- */
-.evo-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.evo-svg { width: 100%; height: auto; max-height: 340px; display: block; overflow: visible; }
 .evo-grade { stroke: #eef2ef; stroke-width: 1; }
 .evo-base { stroke: #d9e0dc; stroke-width: 1; }
-.evo-eixo-y, .evo-eixo-x { fill: #5d6b64; font-size: 11.5px; font-family: inherit; }
+.evo-eixo-y, .evo-eixo-x { fill: #5d6b64; font-size: 12px; font-family: inherit; }
 .evo-traco { fill: none; stroke: #1d7a48; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
 .evo-ponto { fill: #1d7a48; stroke: #fff; stroke-width: 1.4; }
 
@@ -514,8 +514,7 @@ section.painel-dash[data-painel="ultimos"] { margin-bottom: 8px; }
 @media (max-width: 760px) {
   .filtros-com-visao { grid-template-columns: minmax(0, 1fr); }
   .filtros-com-visao .campo-visao, .filtros-com-visao .filtros-acoes { grid-column: auto; }
-  .evo-eixo-y, .evo-eixo-x { font-size: 22px; }
-  .evo-eixo-x-alt { display: none; }
+  .evo-eixo-y, .evo-eixo-x { font-size: 17px; }
   .tabela-dash.tabela-empilhavel td { grid-template-columns: 128px 1fr; }
   .segmento span { padding: 0 6px; font-size: 0.8rem; }
   .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -525,6 +524,10 @@ section.painel-dash[data-painel="ultimos"] { margin-bottom: 8px; }
   .tabela-dash tfoot, .tabela-dash tfoot tr, .tabela-dash tfoot th, .tabela-dash tfoot td { display: block; width: 100%; }
 }
 @media (max-width: 480px) {
+  /* Painéis do Dashboard: título numa linha e o seletor (Visualização) embaixo, ocupando a largura toda. */
+  .painel-cab { flex-direction: column; align-items: stretch; gap: 8px; }
+  .painel-controle { justify-content: space-between; }
+  .painel-controle select { min-width: 150px; }
   .kpis { grid-template-columns: minmax(0, 1fr); }
   .cartao-kpi { flex-direction: row; }
   .segmentado { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
