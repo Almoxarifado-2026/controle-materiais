@@ -1,0 +1,18 @@
+{
+  "name": "controle-materiais-desktop",
+  "version": "1.11.0",
+  "private": true,
+  "description": "Programa para Windows (.exe) do Controle de Materiais: abre o mesmo sistema do site, com os mesmos dados no Firebase.",
+  "author": "Controle de Materiais",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node tests/test-servir.js",
+    "dist": "electron-builder --config build-config.yml --win --publish never"
+  },
+  "engines": { "node": ">=22" },
+  "devDependencies": {
+    "electron": "^44.7.2",
+    "electron-builder": "^26.15.3"
+  }
+}

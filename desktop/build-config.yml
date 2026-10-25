@@ -1,0 +1,32 @@
+# Configuração do electron-builder (gera o instalador e a versão portátil para Windows).
+# Uso (no Windows, ou pelo workflow release-exe.yml):
+#   1) cd site && npm ci && npm run build        (gera ../dist com o site)
+#   2) cd desktop && npm ci && npm run dist      (gera desktop/release/*.exe)
+appId: br.com.controlemateriais.app
+productName: Controle de Materiais
+copyright: Controle de Materiais
+directories:
+  output: release
+files:
+  - main.js
+  - src/**/*
+  - package.json
+extraResources:
+  - from: ../dist
+    to: site
+asar: true
+win:
+  icon: icon.ico
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  shortcutName: Controle de Materiais
+  artifactName: Controle-de-Materiais-Instalador-${version}.${ext}
+portable:
+  artifactName: Controle-de-Materiais-Portatil-${version}.${ext}
