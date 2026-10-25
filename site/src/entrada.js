@@ -11,7 +11,7 @@
 // ============================================================
 import { initializeApp } from 'firebase/app';
 import * as sdk from 'firebase/firestore';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { initializeAuth, browserLocalPersistence, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import provedorWeb from './provedorWeb.js';
 import fetchLocalModulo from './fetchLocal.js';
 
@@ -49,7 +49,9 @@ if (configurado) {
   // por extensões do navegador, antivírus e proxies, gerando "AbortError: signal is aborted
   // without reason" em cascata. Com long polling as consultas passam por requisições comuns.
   const db = sdk.initializeFirestore(app, { experimentalForceLongPolling: true });
-  const auth = getAuth(app);
+  // Só e-mail/senha: initializeAuth SEM o resolvedor de popup/redirect evita que o Firebase tente
+  // carregar apis.google.com (bloqueado pela CSP, que só permite scripts do próprio site).
+  const auth = initializeAuth(app, { persistence: browserLocalPersistence });
   configurarFirestore({ db, sdk });
 
   onAuthStateChanged(auth, (u) => {
