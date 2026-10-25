@@ -11,7 +11,7 @@
 // ============================================================
 import { initializeApp } from 'firebase/app';
 import * as sdk from 'firebase/firestore';
-import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { initializeAuth, indexedDBLocalPersistence, browserSessionPersistence, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import provedorWeb from './provedorWeb.js';
 import fetchLocalModulo from './fetchLocal.js';
 
@@ -41,7 +41,7 @@ const MENSAGENS_AUTH = {
 
 function mensagemAuth(err) {
   const codigo = err && err.code;
-  if (!MENSAGENS_AUTH[codigo]) console.warn('Falha no login (código do Firebase):', codigo, '| detalhe:', err && err.message, '| servidor:', err && err.customData && JSON.stringify(err.customData._serverResponse)); // ajuda a diagnosticar
+  if (!MENSAGENS_AUTH[codigo]) console.warn('[auth v3] Falha no login (código do Firebase):', codigo, '| detalhe:', err && err.message, '| servidor:', err && err.customData && JSON.stringify(err.customData._serverResponse)); // ajuda a diagnosticar
   return MENSAGENS_AUTH[codigo] || `Não foi possível entrar. Tente novamente.${codigo ? ` (${codigo})` : ''}`;
 }
 
@@ -59,10 +59,10 @@ if (configurado) {
   // Só e-mail/senha: initializeAuth SEM o resolvedor de popup/redirect evita que o Firebase tente
   // carregar apis.google.com (bloqueado pela CSP, que só permite scripts do próprio site).
   const auth = initializeAuth(app, {
-    // Ordem de preferência para guardar a sessão: IndexedDB (muito mais espaço), depois localStorage
-    // e por último sessionStorage. Só localStorage falha com "exceeded the quota" quando o endereço
+    // Ordem para guardar a sessão: IndexedDB (muito mais espaço) e, se indisponível, sessionStorage
+    // (o localStorage ficou de fora de propósito: no github.io ele é compartilhado e pode estar cheio). Só localStorage falha com "exceeded the quota" quando o endereço
     // (github.io é compartilhado entre projetos) já está com o armazenamento cheio.
-    persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence],
+    persistence: [indexedDBLocalPersistence, browserSessionPersistence],
   });
   configurarFirestore({ db, sdk });
 
