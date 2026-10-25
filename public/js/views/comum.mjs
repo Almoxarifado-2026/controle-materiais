@@ -115,7 +115,7 @@ export function htmlBarraFiltros(filtros, materiais, { comVisao = false, visaoAt
     <h2>Filtros</h2>
     <button type="button" class="filtros-modal-fechar" data-acao="fechar-filtros" aria-label="Fechar filtros">${ICONE_FECHAR}</button>
   </div>
-  <form class="filtros${comVisao ? ' filtros-com-visao' : ''}" id="form-filtros" novalidate>
+  <form class="filtros${comVisao ? ' filtros-com-visao' : ''}${comVisao && visaoAtual !== 'personalizado' ? ' datas-ocultas' : ''}" id="form-filtros" novalidate>
     ${comVisao ? htmlCampoVisao(visaoAtual) : ''}
     <div class="campo">
       <label for="f-material">Material</label>
@@ -125,11 +125,11 @@ export function htmlBarraFiltros(filtros, materiais, { comVisao = false, visaoAt
       <label for="f-categoria">Categoria</label>
       <select id="f-categoria" name="categoria"><option value="">Todas as categorias</option>${opCategorias}</select>
     </div>
-    <div class="campo">
+    <div class="campo campo-data">
       <label for="f-inicial">Data inicial</label>
       <input id="f-inicial" name="dataInicial" type="date" value="${esc(filtros.dataInicial)}">
     </div>
-    <div class="campo">
+    <div class="campo campo-data">
       <label for="f-final">Data final</label>
       <input id="f-final" name="dataFinal" type="date" value="${esc(filtros.dataFinal)}">
     </div>
@@ -299,22 +299,34 @@ export function montarTelaComFiltros({ raiz, api, ativa, titulo, subtitulo, busc
     if (ev.target.id !== 'form-filtros') return;
     ev.preventDefault();
     const dados = new FormData(ev.target);
+    if (comVisao) visao = String(dados.get('visao') ?? visao);
+    // Data inicial/final só existem na visão "Personalizado": nas outras (Dia/Semana/Mês/Ano) o
+    // período vem da própria visão, então datas antigas escondidas não podem ser enviadas.
+    const usaDatas = !comVisao || visao === 'personalizado';
     definirFiltros({
       materialId: String(dados.get('materialId') ?? ''),
       categoria: String(dados.get('categoria') ?? ''),
-      dataInicial: String(dados.get('dataInicial') ?? ''),
-      dataFinal: String(dados.get('dataFinal') ?? ''),
+      dataInicial: usaDatas ? String(dados.get('dataInicial') ?? '') : '',
+      dataFinal: usaDatas ? String(dados.get('dataFinal') ?? '') : '',
     });
-    if (comVisao) visao = String(dados.get('visao') ?? visao);
     fecharModal();
     carregarResultado();
   });
   // Trocar o Período (Dia/Semana/Mês/Ano/Personalizado) já aplica, como um botão segmentado deve fazer.
   raiz.addEventListener('change', (ev) => {
     const alvo = ev.target;
+    if (!(alvo && alvo.name === 'visao' && alvo.form && alvo.form.id === 'form-filtros')) return;
+    // "Personalizado" mostra Data inicial/final; as outras visões escondem.
+    const personalizado = alvo.value === 'personalizado';
+    alvo.form.classList.toggle('datas-ocultas', !personalizado);
+    if (personalizado) {
+      const inicial = alvo.form.querySelector('#f-inicial');
+      if (inicial && !celular.matches) inicial.focus();
+      return; // espera o usuário escolher as datas e tocar em "Aplicar filtros"
+    }
     // No modal (celular) o usuário escolhe tudo e só então toca em "Aplicar filtros".
     if (celular.matches) return;
-    if (alvo && alvo.name === 'visao' && alvo.form && alvo.form.id === 'form-filtros') alvo.form.requestSubmit();
+    alvo.form.requestSubmit();
   });
   raiz.addEventListener('click', (ev) => {
     const alvo = ev.target.closest('[data-acao]');
