@@ -335,8 +335,10 @@ section[data-tela="relatorios"] [data-regiao="periodo"] { display: none; }
     position: sticky; top: 0; z-index: 40; align-self: stretch;
     padding: 10px 12px; overflow-y: auto;
   }
-  .brand { padding: 0; }
-  .menu-botao { display: inline-flex; }
+  /* Logo + nome centralizados na barra; o botão ☰ fica no canto esquerdo. */
+  .brand { padding: 0; position: relative; justify-content: center; min-height: 44px; }
+  .brand-textos { align-items: center; text-align: center; }
+  .menu-botao { display: inline-flex; position: absolute; left: 0; top: 50%; transform: translateY(-50%); margin-left: 0; }
   .nav, .sidebar-rodape { display: none; }
   .sidebar.aberto .nav { display: flex; flex-direction: column; gap: 4px; padding-top: 12px; }
   .sidebar.aberto .sidebar-rodape { display: flex; padding: 16px 4px 6px; }
