@@ -1,0 +1,60 @@
+name: Gerar EXE (Windows)
+
+# Gera o instalador e a versão portátil do programa para Windows num computador Windows do GitHub.
+# - Manualmente: aba "Actions" > "Gerar EXE (Windows)" > "Run workflow" (os arquivos ficam em "Artifacts").
+# - Ao criar uma tag "v*" (ex.: git tag v1.11.0 && git push origin v1.11.0): também publica na aba "Releases".
+# O programa abre o MESMO sistema do site (dados no Firebase); por isso public/firebase-config.js
+# precisa estar preenchido antes (ver DEPLOY_ONLINE.md).
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  exe:
+    runs-on: windows-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar dependências (site)
+        run: npm ci
+        working-directory: site
+
+      - name: Gerar o site (dist/)
+        run: npm run build
+        working-directory: site
+
+      - name: Instalar dependências (programa)
+        run: npm ci
+        working-directory: desktop
+
+      - name: Testar o servidor de arquivos do programa
+        run: npm test
+        working-directory: desktop
+
+      - name: Gerar o EXE (instalador + portátil)
+        run: npm run dist
+        working-directory: desktop
+
+      - name: Guardar os arquivos gerados
+        uses: actions/upload-artifact@v4
+        with:
+          name: controle-de-materiais-windows
+          path: desktop/release/*.exe
+          if-no-files-found: error
+
+      - name: Publicar em Releases (somente em tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "$GITHUB_REF_NAME" desktop/release/*.exe --generate-notes
